@@ -210,38 +210,26 @@ double takeReference(cv::Mat img) {
 
 void findRoots(cv::Mat & bin_img, cv::Mat & col_img, double scale, bool unicolor) {
     cv::Scalar color;
+    cv::Rect rect;
+    vector<vector<Point>> contours;
+    double contourLenght;
+    double rootLenght_cm;
     /* rotate whole image for vertical text */
     cv::rotate(bin_img, bin_img, ROTATE_90_COUNTERCLOCKWISE);
     cv::rotate(col_img, col_img, ROTATE_90_COUNTERCLOCKWISE);
 
     /* find contours on binary image */
-    vector<vector<Point>> contours;
     cv::findContours(bin_img, contours, RETR_LIST, CHAIN_APPROX_NONE);
-
-    double contour_len=0;
-    cv::drawContours(bin_img,contours,-1,Scalar(255,125,0),1,8);
+    cv::drawContours(bin_img, contours, -1, Scalar(255,125,0), 1, 8);
 
     for (int i=0; i < contours.size(); i++) {
         /* span recangle around contour */
-        Rect rect = cv::boundingRect(contours[i]);
-        double contourLenght = 0, rootLenght_cm;
+        rect = cv::boundingRect(contours[i]);
 
         /* filter for root dimensions */ 
         if (rect.width < ROOT_HEIGHT_MAX && rect.width > ROOT_HEIGHT_MIN && rect.height < ROOT_WIDTH_MAX) {
             /* compute contour length */
-            double x=contours.at(i).at(0).x;
-            double y=contours.at(i).at(0).y;
-
-            size_t count = contours[i].size();
-            for(int ii=1; ii<count; ii++){
-                if(contours.at(i).at(ii).x == x || contours.at(i).at(ii).y == y) {
-                    contourLenght += 1;
-                } else {
-                    contourLenght += 1.41421356;
-                }
-                x = contours.at(i).at(ii).x;
-                y = contours.at(i).at(ii).y;
-            }
+            contourLenght = cv::arcLength(contours[i], false);
 
             /* calculate lenght of root in cm */
             rootLenght_cm = contourLenght / (2 * scale);
