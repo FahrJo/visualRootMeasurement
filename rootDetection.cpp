@@ -1,7 +1,7 @@
 /**
  * @file rootDetection.cpp
  * @author Johannes Fahr (johannes.fahr@posteo.de)
- * @brief Program for detection and measuríng plant roots in images.
+ * @brief Program for detection and measuring plant roots in images.
  * @version 0.1
  * @date 2022-10-17
  * 
@@ -27,15 +27,15 @@
 #include <opencv2/highgui.hpp>
 #include <cmath>
 
-#define ZOOM_SIZE       2000
-#define REF_VIEW_W      300
-#define REF_VIEW_H      600
-#define ZOOM_MOVE_STEP  100
+constexpr int ZOOM_SIZE       2000
+constexpr int REF_VIEW_W      300
+constexpr int REF_VIEW_H      600
+constexpr int ZOOM_MOVE_STEP  100
 
 /* define filter dimensions for bounding boxes here: */
-#define ROOT_WIDTH_MAX  50
-#define ROOT_HEIGHT_MIN 50
-#define ROOT_HEIGHT_MAX 1000
+constexpr int ROOT_WIDTH_MAX  50
+constexpr int ROOT_HEIGHT_MIN 50
+constexpr int ROOT_HEIGHT_MAX 1000
  
 using namespace std;
 using namespace cv;
@@ -44,20 +44,20 @@ double takeReference(Mat img);
 void findRoots(Mat & bin_img, Mat & col_img, double scale, bool unicolor);
 
 const Scalar GREEN = Scalar(0,255,0);
-const Scalar COLOR_SET[] = { GREEN, 
-                                Scalar(255,255,0), 
-                                Scalar(0,255,255), 
-                                Scalar(255,127,255) };
+const std::array<Scalar, 4> COLOR_SET = { GREEN, 
+                                          Scalar(255,255,0), 
+                                          Scalar(0,255,255), 
+                                          Scalar(255,127,255) };
 const int COLOR_SET_LEN = sizeof(COLOR_SET) / sizeof(Scalar);
  
 int main(int argc, char *argv[]) {
     if (argc == 1) {
-        printf("Please specify an image path as conmand line argument!\n");
+        printf("Please specify an image path as command line argument!\n");
         return EXIT_FAILURE;
     }
-    printf("Copyright (C) 2022 Johannes Fahr\n\
-This program comes with ABSOLUTELY NO WARRANTY;\n\
-This is free software, and you are welcome to \n\
+    printf("Copyright (C) 2022 Johannes Fahr\n
+This program comes with ABSOLUTELY NO WARRANTY;\n
+This is free software, and you are welcome to \n
 redistribute it under certain conditions; \n\n");
 
     Mat src_img = imread(argv[1], IMREAD_COLOR);
@@ -172,10 +172,12 @@ redistribute it under certain conditions; \n\n");
 
 
 double takeReference(Mat img) {
-    int x = 100, y = 100;
+    int x = 100;
+    int y = 100;
     bool firstMarkerSet;
     bool exit = false;
-    Point marker1, marker2;
+    Point marker1;
+    Point marker2;
     double factor = 1;
     Mat wrk_img;
     
@@ -234,8 +236,8 @@ void findRoots(Mat & bin_img, Mat & col_img, double scale, bool unicolor) {
     Scalar color;
     Rect rect;
     vector<vector<Point>> contours;
-    double contourLenght;
-    double rootLenght_cm;
+    double contourLength;
+    double rootLength_cm;
     /* rotate whole image for vertical text */
     rotate(bin_img, bin_img, ROTATE_90_COUNTERCLOCKWISE);
     rotate(col_img, col_img, ROTATE_90_COUNTERCLOCKWISE);
@@ -245,16 +247,16 @@ void findRoots(Mat & bin_img, Mat & col_img, double scale, bool unicolor) {
     drawContours(bin_img, contours, -1, Scalar(255,125,0), 1, 8);
 
     for (int i=0; i < contours.size(); i++) {
-        /* span recangle around contour */
+        /* span rectangle around contour */
         rect = boundingRect(contours[i]);
 
         /* filter for root dimensions */ 
         if (rect.width < ROOT_HEIGHT_MAX && rect.width > ROOT_HEIGHT_MIN && rect.height < ROOT_WIDTH_MAX) {
             /* compute contour length */
-            contourLenght = arcLength(contours[i], false);
+            contourLength = arcLength(contours[i], false);
 
-            /* calculate lenght of root in cm */
-            rootLenght_cm = contourLenght / (2 * scale);
+            /* calculate length of root in cm */
+            rootLength_cm = contourLength / (2 * scale);
 
             /* choose new color if not unicolor mode */
             color = (unicolor) ? COLOR_SET[0] : COLOR_SET[i % COLOR_SET_LEN];
@@ -263,13 +265,13 @@ void findRoots(Mat & bin_img, Mat & col_img, double scale, bool unicolor) {
             rectangle(bin_img, Point(rect.x,rect.y), 
                 Point(rect.x+rect.width,rect.y+rect.height), 
                 GREEN,2);
-            putText(bin_img, "Root: " + to_string(rootLenght_cm), 
+            putText(bin_img, "Root: " + to_string(rootLength_cm), 
                 Point(rect.x+rect.width+10,rect.y+rect.height), 0, 1, 
                 GREEN);
             rectangle(col_img, Point(rect.x,rect.y), 
                 Point(rect.x+rect.width,rect.y+rect.height), 
                 color,2);
-            putText(col_img, "Root: " + to_string(rootLenght_cm), 
+            putText(col_img, "Root: " + to_string(rootLength_cm), 
                 Point(rect.x+rect.width+10,rect.y+rect.height), 0, 1, 
                 color, 2);
         }

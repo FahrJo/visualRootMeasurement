@@ -1,6 +1,6 @@
 # visualRootMeasurement
 
-This tool aims to automize the lenght measurement of plant roots on images.It is based on OpenCV 4.
+This tool aims to automate the length measurement of plant roots on images.It is based on OpenCV 4.
 
 > [!WARNING]
 > The results of the current implementation need more validation. Do not trust the current results!
@@ -25,9 +25,9 @@ It will open a window to pick a reference length of ten millimeters. One moves t
 <img alt="reference measurement" src="img/reference.png" width="50%">
 </p>
 
-Then, the image is opened twice. The black and white image shows the threshold, used for the current measurement and the collored image shows the input image with overlays for the detected roots, together with their estimated lenght.
+Then, the image is opened twice. The black and white image shows the threshold, used for the current measurement and the colored image shows the input image with overlays for the detected roots, together with their estimated length.
 
-For better readability, the colors of the overlays can be changed from monochromatic green to a palette of different colors fith the key '*c*'
+For better readability, the colors of the overlays can be changed from monochromatic green to a palette of different colors with the key '*c*'
 
 ![colorized overlay](img/bw_col.png)
 
@@ -39,17 +39,17 @@ The application can be controlled via the keyboard.
 
 |Key|Function|
 |---|--------|
-| ↑/↓/←/→ |Move reference marker arround|
+| ↑/↓/←/→ |Move reference marker around|
 | ↵ |Set marker|
 
 ### Measurement Mode
 
 |Key|Function|
 |---|--------|
-| ↑ |Decrease threshhold by ten|
-| ↓ |Increase threshhold by ten|
-| ← |Decrease threshhold by one|
-| → |Increase threshhold by one|
+| ↑ |Decrease threshold by ten|
+| ↓ |Increase threshold by ten|
+| ← |Decrease threshold by one|
+| → |Increase threshold by one|
 | + |Zoom in|
 | - |Zoom out|
 |w/a/s/d |Move around in zoomed view|
