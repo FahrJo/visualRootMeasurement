@@ -5,8 +5,20 @@
  * @version 0.1
  * @date 2022-10-17
  * 
- * @copyright Copyright (c) 2022
+ * @copyright Copyright (c) 2022 Johannes Fahr
  * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
  
 #include <iostream>
@@ -38,8 +50,17 @@ const Scalar COLOR_SET[] = { GREEN,
                                 Scalar(255,127,255) };
 const int COLOR_SET_LEN = sizeof(COLOR_SET) / sizeof(Scalar);
  
-int main() {
-    Mat src_img = imread("./data/10.10.202211-04-46_0-page-001.jpg", IMREAD_COLOR);
+int main(int argc, char *argv[]) {
+    if (argc == 1) {
+        printf("Please specify an image path as conmand line argument!\n");
+        return EXIT_FAILURE;
+    }
+    printf("Copyright (C) 2022 Johannes Fahr\n\
+This program comes with ABSOLUTELY NO WARRANTY;\n\
+This is free software, and you are welcome to \n\
+redistribute it under certain conditions; \n\n");
+
+    Mat src_img = imread(argv[1], IMREAD_COLOR);
  
     Mat gray_img;
     cvtColor(src_img, gray_img, COLOR_BGR2GRAY);
@@ -71,7 +92,7 @@ int main() {
     while (!exit) {
         if (redraw) {
             threshold(gray_img, bin_img, thd, 255, THRESH_BINARY_INV);
-            cout<<"Threshold:"<<thd<<endl;
+            cout<< "\r\e[KThreshold: "<<std::setfill(' ') << std::setw(3)<<thd<<flush;
             rgb_img.release();
             rgb_img = src_img.clone();
 
@@ -146,6 +167,7 @@ int main() {
             break;
         }
     }
+    return EXIT_SUCCESS;
 }
 
 
@@ -219,7 +241,7 @@ void findRoots(Mat & bin_img, Mat & col_img, double scale, bool unicolor) {
     rotate(col_img, col_img, ROTATE_90_COUNTERCLOCKWISE);
 
     /* find contours on binary image */
-    findContours(bin_img, contours, RETR_LIST, CHAIN_APPROX_NONE);
+    findContours(bin_img, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
     drawContours(bin_img, contours, -1, Scalar(255,125,0), 1, 8);
 
     for (int i=0; i < contours.size(); i++) {
