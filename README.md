@@ -21,7 +21,9 @@ call this program with a path to an image (e.g. JPG, TIFF, PNG) to analyze as co
 
 It will open a window to pick a reference length of ten millimeters. One moves the reference points via the cursor keys and accepts the first as well as the second reference marker with '*Enter*'.
 
-![reference measurement](img/reference.png)
+<p align="center">
+<img alt="reference measurement" src="img/reference.png" width="50%">
+</p>
 
 Then, the image is opened twice. The black and white image shows the threshold, used for the current measurement and the collored image shows the input image with overlays for the detected roots, together with their estimated lenght.
 
