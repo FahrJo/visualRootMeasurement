@@ -1,6 +1,6 @@
 # visualRootMeasurement
 
-This tool aims to automate the length measurement of plant roots on images.It is based on OpenCV 4.
+This tool aims to automate the length measurement of plant roots on images. It is based on OpenCV 4.
 
 > [!WARNING]
 > The results of the current implementation need more validation. Do not trust the current results!
